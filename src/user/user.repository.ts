@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 export class UserRepository {
     private users = [];
 
-    async getAll() {
+    async findAll() {
         return this.users;
     }
 
