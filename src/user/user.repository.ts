@@ -1,8 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { UserEntity } from "./user.entity";
 
 @Injectable()
 export class UserRepository {
-    private users = [];
+    private users: UserEntity[] = [];
+
+    async save(user: UserEntity) {
+        this.users.push(user);
+    }
 
     async findAll() {
         return this.users;
@@ -12,9 +17,5 @@ export class UserRepository {
         const userExists = this.users.find(user => user.email === email);
 
         return userExists !== undefined;
-    }
-
-    async save(user) {
-        this.users.push(user);
     }
 }
