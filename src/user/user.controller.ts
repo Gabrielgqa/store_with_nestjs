@@ -1,17 +1,19 @@
+import { v4 as uuid } from 'uuid';
 import { Body, Controller, Post, Get, Put, Param, Delete } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
-import { v4 as uuid } from 'uuid';
 import { ListUserDTO } from './dto/listUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
+import { UserService } from './user.service';
 
 @Controller('/users')
 export class UserController {
 
-    constructor(private userRepository: UserRepository) {
-
-    }
+    constructor(
+        private userRepository: UserRepository,
+        private userService: UserService
+    ) {}
 
     @Post()
     async create(@Body() createUserData: CreateUserDTO) {
@@ -22,15 +24,14 @@ export class UserController {
         user.email = createUserData.email;
         user.password = createUserData.password;
         
-        this.userRepository.save(user);
+        this.userService.create(user);
         return { user: new ListUserDTO(user.id, user.name), message: "Usuário criado com sucesso!" };
     }
 
     @Get()
     async findAll() {
-        const users = await this.userRepository.findAll();
-        const listUsers = users.map( user => new ListUserDTO(user.id, user.name));
-        return listUsers;
+        const users = await this.userService.findAll();
+        return users;
     }
 
     @Put('/:id')
